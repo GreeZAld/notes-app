@@ -1,0 +1,194 @@
+@mixin disabled-button {
+  background-color: grey;
+  cursor: not-allowed;
+}
+
+@mixin button {
+  width: 250px;
+  line-height: 40px;
+  margin: 10px auto;
+  font-size: 26px;
+  font-weight: 600;
+  color: #ffffff;
+  border: none;
+}
+
+@mixin icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.marked {
+  color: rgb(168, 102, 211);
+  font-weight: 600;
+}
+
+.main {
+  width: 50%;
+  margin: 0 auto;
+  justify-self: center;
+}
+
+h1 {
+  width: fit-content;
+  margin: 1rem auto;
+  font-size: 48px;
+}
+
+.notes-container {
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.note {
+  flex: 0 0 30%;
+  max-width: 30%;
+  margin: 10px auto;
+  word-wrap: break-word;
+  text-align: start;
+  float: left;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(208, 255, 208, 0.712);
+  box-shadow: 3px 3px 5px 3px rgba(0,0,0,0.5);
+}
+
+.note-text {
+  padding: 5px;
+  height: 250px;
+  overflow-y: auto;
+  font-size: 22px;
+}
+
+.input-field {
+  width: 400px;
+  height: 200px;
+  resize: none;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.add-button {
+  @include button;
+  background-color: #1a69f2;
+  &:hover {
+    cursor: pointer;
+  background-color: #0747b7;
+  }
+  &:disabled {
+    @include disabled-button;
+  }
+  &:active {
+    -webkit-box-shadow: inset 0px 0px 5px 4px rgba(0,0,0,0.7);
+    box-shadow: inset 0px 0px 5px 4px rgba(0,0,0,0.7);
+  }
+}
+
+.update-button {
+  @include button;
+  background-color: #1bb63d;
+  &:hover {
+    cursor: pointer;
+  background-color: #18810a;
+  }
+  &:disabled {
+    @include disabled-button;
+  }
+  &:active {
+    -webkit-box-shadow: inset 0px 0px 5px 4px rgba(0,0,0,0.7);
+    box-shadow: inset 0px 0px 5px 4px rgba(0,0,0,0.7);
+  }
+}
+
+.controls {
+  padding: 5px;
+  height: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.edit-icon {
+  background-image: url(./icons/edit.svg);
+  @include icon;
+}
+
+.delete-icon {
+  background-image: url(./icons/delete.svg);
+ @include icon;
+}
+
+.note-textarea {
+  height: 350px;
+  width: 300px;
+  border: none;
+}
+
+
+.note-textarea-wrapper {
+  display: block;
+  width: fit-content;
+  margin: 0 auto;
+  background-color: lightgoldenrodyellow;
+  font-size: 24px;
+  padding: 5px;
+  max-height: 350px;
+}
+
+.note-actions-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  margin: 1rem auto;
+}
+
+.tags-wrapper {
+  width: 80%;
+  height:auto;
+  margin: 1rem auto;
+  border: 2px solid lightgray;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-radius: 15px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 5px;
+  width: fit-content;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 5px 5px;
+  background-color: lightblue;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+
+.reset-button {
+  width: 150px;
+  line-height: 24px;
+  margin: 10px auto;
+  font-size: 20px;
+  font-weight: 600;
+  background-color: #cf0913bd;
+  color: #ffffff;
+  border: none;
+  &:hover {
+    cursor: pointer;
+  }
+  &:disabled {
+    @include disabled-button;
+  }
+  &:active {
+    -webkit-box-shadow: inset 0px 0px 5px 4px rgba(0,0,0,0.7);
+    box-shadow: inset 0px 0px 5px 4px rgba(0,0,0,0.7);
+  }
+}
