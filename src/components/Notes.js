@@ -1,8 +1,11 @@
 import React from 'react';
 
 function Notes(props) {
-        return (
+
+
+    return (
             <div>
+
                 <div className="notes-container">
                     {Array.from(props.notes).map(item => {
                         return (

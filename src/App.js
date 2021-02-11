@@ -4,16 +4,15 @@ import Notes from './components/Notes';
 import Tags from './components/Tags';
 import axios from 'axios';
 import './App.scss';
-import data from './notes.json';
 
 class App2 extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            notes: data.notes,
+            notes: [],
             newNote: '',
-            updatedNote: '',
+            updatedNote: null,
             tags: [],
             filteredNotes: []
         }
@@ -24,11 +23,33 @@ class App2 extends React.Component {
         this.editButtonHandler = this.editButtonHandler.bind(this);
         this.deleteButtonHandler = this.deleteButtonHandler.bind(this);
         this.filterHandler = this.filterHandler.bind(this);
+        this.getData = this.getData.bind(this);
     };
 
     handleChange = (e) => {
         let newOne = e.target.value;
         this.setState({ newNote: newOne });
+    }
+
+    getData = async () => {
+        await axios.get('https://my-notes-app-tt.herokuapp.com/notes')
+            .then((response) => {
+                this.setState({ notes: response.data })
+
+                this.state.notes.forEach(note => {
+                    if (note.tags.length > 0) {
+                        note.tags.forEach(tag => {
+                            this.setState(prevState => {
+                                if (!prevState.tags.includes(tag)) {
+                                    return {
+                                        tags: prevState.tags.concat(tag)
+                                    }
+                                }
+                            })
+                        })
+                    }
+                })
+            });
     }
 
     checkTags = (e) => {
@@ -48,8 +69,8 @@ class App2 extends React.Component {
         }
     }
 
-    saveButtonHandler = () => {
-        axios.post('http://localhost:9000/notes', {
+    saveButtonHandler = async () => {
+        await axios.post('https://my-notes-app-tt.herokuapp.com/notes', {
             note: this.state.newNote, tags: this.state.newNote.split(' ').filter(word =>
                 word.startsWith('#'))
         });
@@ -66,13 +87,19 @@ class App2 extends React.Component {
             }
             return null;
         });
+        this.setState({ newNote: '' });
+        this.getData();
     }
 
-    updateButtonHandler = () => {
-        axios.patch(`http://localhost:9000/notes/${this.state.updatedNote.id}`, {
+    updateButtonHandler = async () => {
+        await axios.patch(`https://my-notes-app-tt.herokuapp.com/notes/${this.state.updatedNote.id}`, {
             note: this.state.newNote, tags: this.state.newNote.split(' ').filter(word =>
                 word.startsWith('#'))
         });
+        this.setState({ tags: this.state.tags.filter(tag => tag === this.state.updatedNote.tags.map(i => i))});
+        this.setState({ newNote: '', updatedNote: null });
+        document.getElementsByClassName('add-button')[0].disabled = !document.getElementsByClassName('add-button')[0].disabled;
+        this.getData();
     };
 
     editButtonHandler = (item) => {
@@ -80,11 +107,13 @@ class App2 extends React.Component {
             newNote: item.note,
             updatedNote: item
         });
-        document.getElementsByClassName('add-button')[0].disabled = "true";
+        document.getElementsByClassName('add-button')[0].disabled = !document.getElementsByClassName('add-button')[0].disabled;
     };
 
-    deleteButtonHandler = (item) => {
-        axios.delete(`http://localhost:9000/notes/${item.id}`);
+    deleteButtonHandler = async (item) => {
+        await axios.delete(`https://my-notes-app-tt.herokuapp.com/notes/${item.id}`);
+        this.setState({ tags: this.state.tags.filter(tag => tag === item.tags.map(i => i))});
+        this.getData();
     };
 
     filterHandler = (tag) => {
@@ -100,26 +129,13 @@ class App2 extends React.Component {
     }
 
     filterResetHandler = () => {
-        this.setState({ notes: data.notes });
+        this.getData();
         this.setState({ filteredNotes: [] });
     }
 
-    componentDidMount() {
-
-        this.state.notes.forEach(note => {
-            if (note.tags.length > 0) {
-                note.tags.forEach(tag => {
-                    this.setState(prevState => {
-                        if (!prevState.tags.includes(tag)) {
-                            return {
-                                tags: prevState.tags.concat(tag)
-                            }
-                        }
-                    })
-                })
-            }
-        })
-    };
+    async componentDidMount() {
+        this.getData();
+    }
 
     render() {
         return (
@@ -141,12 +157,13 @@ class App2 extends React.Component {
                 </div>
                 <Tags
                     tags={this.state.tags}
-                    data={data}
+                    data={this.state.notes}
                     handleFilter={this.filterHandler}
                     handleReset={this.filterResetHandler}
                     filteredNotes={this.state.filteredNotes}
                 />
-                <Notes notes={this.state.notes}
+                <Notes
+                    notes={this.state.notes}
                     handleDelete={this.deleteButtonHandler}
                     handleEdit={this.editButtonHandler}
                 />
